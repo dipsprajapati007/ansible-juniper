@@ -1,0 +1,11 @@
+---
+
+- name: cobfigure users 
+  hosts: servera
+  tasks:
+    - name: newbie exists with uid 4000
+      user:
+        name: newbie
+        uid: 4000
+        state: present
+
