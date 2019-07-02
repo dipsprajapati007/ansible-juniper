@@ -1,0 +1,31 @@
+---
+- name: Testing Juniper and Ansible
+  hosts: router1
+  gather_facts: no
+  roles:
+    - juniper.junos
+  connection: local
+  tasks:
+    - name: gathering facts through setup
+      setup:
+      register: result
+
+    - name: printing facts
+      debug:
+        var: result.ansible_facts.ansible_all_ipv4_addresses
+
+
+    - name: Execute three commands
+      juniper_junos_command:
+        commands:
+         - "show version"
+         - "show system uptime"
+         - "show interface terse"
+        format: xml
+        dest: "/home/dipesh/myproject/{{ inventory_hostname }}.commands.output"
+      register: response
+
+    - name: Print the command output of each.
+      debug:
+        var: item.stdout
+      with_items: "{{ response.results }}"
